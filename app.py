@@ -24,9 +24,14 @@ from config import Config
 app = Flask(__name__)
 app.config.from_object(Config)
 
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-for sub in ['rooms', 'gallery', 'slider', 'menu', 'amenities', 'general', 'reviews']:
-    os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], sub), exist_ok=True)
+# Vercel has a read-only filesystem — only /tmp is writable.
+# Create upload dirs safely (succeeds on /tmp, skips if still read-only).
+try:
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    for sub in ['rooms', 'gallery', 'slider', 'menu', 'amenities', 'general', 'reviews']:
+        os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], sub), exist_ok=True)
+except OSError:
+    pass  # Read-only FS
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
@@ -356,11 +361,15 @@ def save_upload(file, subfolder='general'):
     ext = file.filename.rsplit('.', 1)[1].lower()
     filename = f"{secrets.token_hex(8)}.{ext}"
     folder = os.path.join(app.config['UPLOAD_FOLDER'], subfolder)
-    os.makedirs(folder, exist_ok=True)
-    path = os.path.join(folder, filename)
-    file.save(path)
-    print('Saved to LOCAL disk (will be lost on restart):', path)
-    return f"{subfolder}/{filename}"
+    try:
+        os.makedirs(folder, exist_ok=True)
+        path = os.path.join(folder, filename)
+        file.save(path)
+        print('Saved to LOCAL disk (ephemeral on Vercel/Render):', path)
+        return f"{subfolder}/{filename}"
+    except OSError as e:
+        print('Local save failed (read-only FS?):', e)
+        return None
 
 
 def media_url(path):
@@ -446,11 +455,15 @@ def download_image_url(url, subfolder='general', timeout=20):
                 print('Cloudinary auto-upload failed:', e)
         # Local
         folder = os.path.join(app.config['UPLOAD_FOLDER'], subfolder)
-        os.makedirs(folder, exist_ok=True)
-        path = os.path.join(folder, filename)
-        with open(path, 'wb') as f:
-            f.write(data)
-        return f"{subfolder}/{filename}"
+        try:
+            os.makedirs(folder, exist_ok=True)
+            path = os.path.join(folder, filename)
+            with open(path, 'wb') as f:
+                f.write(data)
+            return f"{subfolder}/{filename}"
+        except OSError as e:
+            print('Local download save failed:', e)
+            return None
     except Exception as e:
         print('download_image_url failed:', url, e)
         return None
@@ -2055,10 +2068,13 @@ def init_app():
         INDEX_HTML = load_template('index1.html')
     if ADMIN_HTML is None:
         ADMIN_HTML = load_template('admin1.html')
-    # Ensure upload directories exist (needed on Render)
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    for sub in ['rooms', 'gallery', 'slider', 'menu', 'amenities', 'general', 'reviews']:
-        os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], sub), exist_ok=True)
+    # Ensure upload directories exist (uses /tmp on Vercel)
+    try:
+        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+        for sub in ['rooms', 'gallery', 'slider', 'menu', 'amenities', 'general', 'reviews']:
+            os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], sub), exist_ok=True)
+    except OSError:
+        pass
     with app.app_context():
         db.create_all()
         # Add / widen payment_proof column (stores base64 data-URL)
