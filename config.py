@@ -15,7 +15,7 @@ def _database_uri():
         if url.startswith('postgres://'):
             url = url.replace('postgres://', 'postgresql://', 1)
         return url
-    return 'sqlite:///' + os.path.join(BASE_DIR, 'hotel.db')
+    UPLOAD_FOLDER = '/tmp/hotelgrand/uploads'
 
 
 class Config:
