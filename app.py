@@ -1595,7 +1595,7 @@ def admin_section(section):
                         other.set_images(existing)
                 db.session.commit()
                 flash('Room saved. Class photos updated for all rooms named "{}".'.format(room.name), 'success')
-                       elif action == 'save_class_images':
+            elif action == 'save_class_images':
                 class_name = request.form.get('class_name', '').strip()
                 if not class_name:
                     flash('Class name required.', 'danger')
@@ -1609,7 +1609,7 @@ def admin_section(section):
                             if p:
                                 new_uploads.append(p)
                 if new_uploads:
-                    # नयाँ photo आएमा पुरानो local/broken path हटाएर replace
+                    # Replace old local/broken paths with new Cloudinary uploads
                     imgs = new_uploads
                 else:
                     first = Room.query.filter_by(name=class_name).order_by(Room.sort_order).first()
@@ -1620,7 +1620,8 @@ def admin_section(section):
                 for r in Room.query.filter_by(name=class_name).all():
                     r.set_images(imgs)
                 db.session.commit()
-                flash(f'Class photo updated for "{class_name}".', 'success')            elif action == 'delete_room':
+                flash(f'Class photo updated for "{class_name}".', 'success')
+            elif action == 'delete_room':
                 rid = request.form.get('room_id')
                 room = db.session.get(Room, int(rid))
                 if room:
