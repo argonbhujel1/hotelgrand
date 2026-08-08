@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ seo_title }}</title>
+<meta name="description" content="{{ seo_description }}">
+{% set icon_ns = namespace(url='https://i.ibb.co/wFXnS6pg/Chat-GPT-Image-Aug-1-2026-03-35-30-AM.png') %}
+{% if og_image %}
+  {% if og_image.startswith('http') %}{% set icon_ns.url = og_image %}
+  {% else %}{% set icon_ns.url = media_url(og_image) %}{% endif %}
+{% endif %}
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ icon_ns.url }}">
+<link rel="icon" type="image/png" sizes="192x192" href="{{ icon_ns.url }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ icon_ns.url }}">
+<link rel="shortcut icon" href="{{ icon_ns.url }}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ hotel_name }}">
+<meta property="og:title" content="{{ seo_title }}">
+<meta property="og:description" content="{{ seo_description }}">
+<meta property="og:image" content="{{ icon_ns.url }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://hotelgrand.com.np/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ seo_title }}">
+<meta name="twitter:description" content="{{ seo_description }}">
+<meta name="twitter:image" content="{{ icon_ns.url }}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--primary:{{ primary_color }};--secondary:{{ secondary_color }};--dark:#1a1a2e;--light:#f8f6f0;--text:#333;--card:#fff;--muted:#6c757d}
+body.dark-mode{--light:#121212;--text:#e8e8e8;--card:#1e1e1e;--muted:#aaa;--dark:#0a0a0a}
+body.dark-mode{background:var(--light)!important;color:var(--text)}
+body.dark-mode .room-card,body.dark-mode .card,body.dark-mode .bg-white,body.dark-mode .review-card,body.dark-mode .modal-content{background:var(--card)!important;color:var(--text)}
+body.dark-mode .text-muted{color:var(--muted)!important}
+body.dark-mode .form-control,body.dark-mode .form-select{background:#2a2a2a;border-color:#444;color:var(--text)}
+body.dark-mode footer{background:#0a0a0a}
+.lang-btn,.theme-btn{border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:6px;padding:.2rem .45rem;font-size:.75rem;cursor:pointer}
+.lang-btn.active{background:var(--secondary);color:#1a1a2e;border-color:var(--secondary)}
+*{font-family:'Poppins',sans-serif}h1,h2,h3,h4,.font-serif{font-family:'Playfair Display',serif}
+body{background:var(--light);color:#333}
+body.has-page-bg{background-size:cover;background-attachment:fixed;background-position:center}
+.navbar{background:var(--primary)!important;backdrop-filter:blur(8px)}
+.navbar-brand{font-family:'Playfair Display',serif;font-weight:700;font-size:1.35rem}
+.btn-primary{background:var(--primary);border-color:var(--primary)}.btn-primary:hover{background:#144a3a;border-color:#144a3a}
+.btn-gold{background:var(--secondary);color:#1a1a2e;border:none;font-weight:600}.btn-gold:hover{background:#b8911f;color:#fff}
+.hero{min-height:85vh;background:linear-gradient(105deg,rgba(0,0,0,.45) 0%,rgba(0,0,0,.25) 45%,rgba(0,0,0,.15) 100%),url('{{ media_url(hero_image) if hero_image else "https://i.ibb.co/Xrd5x9hr/Whats-App-Image-2026-07-25-at-8-48-22-PM.jpg" }}') center center/cover no-repeat;background-color:#222;display:flex;align-items:center;color:#fff;padding:5rem 0 3rem}
+.hero h1{font-size:clamp(1.85rem,6vw,3.6rem);font-weight:700;text-shadow:0 2px 12px rgba(0,0,0,.45)}.hero .lead,.hero .small,.hero span{text-shadow:0 1px 6px rgba(0,0,0,.4)}.hero .btn-outline-light{border-width:2px;backdrop-filter:blur(4px);background:rgba(255,255,255,.08)}.hero .btn-gold{background:#e8c84a;color:#1a1a2e;border:none;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.25)}.hero .btn-gold:hover{background:#f0d45c;color:#111}
+@media (max-width:768px){
+  .hero{min-height:100svh;min-height:100vh;padding:5.5rem 1rem 2.5rem;background-position:center center;align-items:center;text-align:center}
+  .hero .container{width:100%}
+  .hero h1{font-size:clamp(1.75rem,8vw,2.4rem);line-height:1.2}
+  .hero .lead{font-size:0.95rem;margin-bottom:1.25rem!important}
+  .hero .btn{width:100%;max-width:280px}
+  .hero .d-flex.flex-wrap{justify-content:center!important}
+  .hero .mt-4.d-flex{flex-direction:column;gap:0.5rem!important;align-items:center}
+}
+@media (max-width:480px){
+  .hero{min-height:92svh;padding-top:4.75rem}
+  .hero h1{font-size:1.65rem}
+  .hero .lead{font-size:0.88rem}
+}
+.section-title{position:relative;display:inline-block;margin-bottom:2rem}
+.section-title::after{content:'';display:block;width:60px;height:3px;background:var(--secondary);margin-top:8px}
+.room-card{border:none;border-radius:16px;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.08);transition:transform .3s,box-shadow .3s;background:#fff}
+.room-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,.12)}
+.room-card .card-img-top{height:220px;object-fit:cover;background:#ddd}
+.price-tag{color:var(--primary);font-weight:700;font-size:1.25rem}
+.amenity-icon{width:64px;height:64px;border-radius:50%;background:color-mix(in srgb,var(--primary) 12%,white);display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:var(--primary);margin:0 auto 12px}
+.gallery-img{height:200px;object-fit:cover;border-radius:12px;transition:transform .3s;cursor:pointer}
+.gallery-img:hover{transform:scale(1.03)}
+.review-card{border-left:4px solid var(--secondary);background:#fff;border-radius:0 12px 12px 0}
+.stars{color:var(--secondary)}
+.whatsapp-float{position:fixed;bottom:24px;right:24px;z-index:999;width:60px;height:60px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.5);transition:transform .2s}
+.whatsapp-float:hover{transform:scale(1.1)}.whatsapp-float i{font-size:2rem;color:#fff}
+footer{background:var(--dark);color:#ccc}footer a{color:var(--secondary);text-decoration:none}
+.badge-ac{background:#0d6efd}.badge-nonac{background:#6c757d}
+.modal-header{background:var(--primary);color:#fff}
+.nav-pills .nav-link.active{background:var(--primary)}
+.booking-summary{background:color-mix(in srgb,var(--primary) 8%,white);border-radius:12px;padding:1.25rem}
+</style>
+</head>
+<body class="{% if page_bg_image %}has-page-bg{% endif %}" {% if page_bg_image %}style="background-image:linear-gradient(rgba(248,246,240,{{ bg_overlay }}),rgba(248,246,240,{{ bg_overlay }})),url('{{ media_url(page_bg_image) }}');background-size:cover;background-attachment:fixed;background-position:center"{% endif %}>
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
+<div class="container">
+<a class="navbar-brand" href="/"><i class="bi bi-building me-2"></i>Hotel Grand Garden</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
+<div class="collapse navbar-collapse" id="nav">
+<ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+<li class="nav-item"><a class="nav-link" href="#rooms" data-i18n="nav_rooms">Rooms</a></li>
+<li class="nav-item"><a class="nav-link" href="#amenities" data-i18n="nav_amenities">Amenities</a></li>
+<li class="nav-item"><a class="nav-link" href="#restaurant" data-i18n="nav_restaurant">Restaurant</a></li>
+<li class="nav-item"><a class="nav-link" href="#seminar" data-i18n="nav_events">Events</a></li>
+<li class="nav-item"><a class="nav-link" href="#gallery" data-i18n="nav_gallery">Gallery</a></li>
+<li class="nav-item"><a class="nav-link" href="#reviews" data-i18n="nav_reviews">Reviews</a></li>
+<li class="nav-item"><a class="nav-link" href="#contact" data-i18n="nav_contact">Contact</a></li>
+{% if current_user.is_authenticated %}
+<li class="nav-item"><a class="nav-link" href="{{ url_for('my_bookings') }}"><i class="bi bi-calendar-check"></i> My Bookings</a></li>
+{% if current_user.role == 'admin' %}<li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard') }}"><i class="bi bi-gear"></i> Admin</a></li>{% endif %}
+<li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}" data-i18n="nav_logout">Logout</a></li>
+{% else %}
+<li class="nav-item"><button class="btn btn-gold btn-sm px-3" data-bs-toggle="modal" data-bs-target="#authModal" data-i18n="nav_login">Login / Sign Up</button></li>
+{% endif %}
+<li class="nav-item d-flex align-items-center ms-lg-2 mt-2 mt-lg-0"><button type="button" class="theme-btn" id="darkToggle" title="Dark mode"><i class="bi bi-moon-stars"></i></button></li>
+</ul>
+</div>
+</div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}<div class="container mt-3">{% for cat, msg in messages %}<div class="alert alert-{{ cat }} alert-dismissible fade show">{{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}</div>{% endif %}
+{% endwith %}
+
+{% if show_my_bookings is defined and show_my_bookings %}
+<section class="py-5"><div class="container">
+<h2 class="section-title font-serif">My Bookings</h2>
+{% if my_bookings %}
+<div class="table-responsive bg-white shadow-sm"><table class="table table-hover mb-0">
+<thead class="table-success"><tr><th>Ref</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Guests</th><th>Total</th><th>Advance</th><th>Status</th></tr></thead>
+<tbody>{% for b in my_bookings %}<tr>
+<td><strong>{{ b.booking_ref }}</strong></td><td>{{ b.room.number }} – {{ b.room.name }}</td>
+<td>{{ b.check_in }}</td><td>{{ b.check_out }}</td><td>{{ b.guests }}</td>
+<td>{{ currency }} {{ '%.0f'|format(b.total_amount) }}</td><td>{{ currency }} {{ '%.0f'|format(b.advance_paid) }}</td>
+<td><span class="badge bg-{{ 'success' if b.booking_status=='confirmed' else 'warning' }}">{{ b.booking_status }}</span></td>
+</tr>{% endfor %}</tbody></table></div>
+{% else %}<p class="text-muted">No bookings yet. <a href="/#rooms">Browse rooms</a></p>{% endif %}
+<a href="/" class="btn btn-primary mt-3">Back to Home</a>
+</div></section>
+{% else %}
+
+<section class="hero"><div class="container text-center text-lg-start"><div class="row align-items-center"><div class="col-lg-7">
+<p class="text-uppercase mb-2" style="letter-spacing:3px;color:#e8c84a;font-size:.85rem;text-shadow:0 1px 4px rgba(0,0,0,.4)">Urlabari · Morang · Nepal</p>
+<h1 class="mb-3">Hotel Grand Garden</h1>
+<p class="lead mb-4 opacity-90">Luxury Family Stay · Restaurant &amp; Bar · Seminar Hall · Outdoor Events</p>
+<div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+<a href="#rooms" class="btn btn-gold btn-lg px-4" data-i18n="hero_book">Book a Room</a>
+<a href="#seminar" class="btn btn-outline-light btn-lg px-4" data-i18n="hero_event">Host an Event</a>
+</div>
+<div class="mt-4 d-flex flex-wrap gap-4 justify-content-center justify-content-lg-start small opacity-85">
+<span><i class="bi bi-telephone-fill me-1"></i> {{ hotel_phone }}</span>
+<span><i class="bi bi-geo-alt-fill me-1"></i> {{ hotel_location }}</span>
+<span><i class="bi bi-p-circle-fill me-1"></i> <span data-i18n="free_parking">Free Parking</span></span>
+</div>
+</div></div></div></section>
+
+<section id="rooms" class="py-5" {% if rooms_bg_image %}style="background-image:linear-gradient(rgba(248,246,240,{{ bg_overlay }}),rgba(248,246,240,{{ bg_overlay }})),url('{{ media_url(rooms_bg_image) }}');background-size:cover;background-position:center"{% endif %}><div class="container">
+<div class="text-center mb-5"><h2 class="section-title font-serif" data-i18n="sec_rooms">Our Rooms</h2><p class="text-muted">Choose a room class — select room number when booking</p></div>
+<div class="row g-4">
+{% set ns = namespace(seen=[]) %}
+{% for room in rooms %}
+{% if room.name not in ns.seen %}
+{% set _ = ns.seen.append(room.name) %}
+{% set class_rooms = rooms|selectattr('name', 'equalto', room.name)|list %}
+{% set nums = class_rooms|map(attribute='number')|list %}
+{% set ns2 = namespace(imgs=[]) %}
+{% for cr in class_rooms %}
+  {% if not ns2.imgs and cr.get_images() %}{% set ns2.imgs = cr.get_images() %}{% endif %}
+{% endfor %}
+<div class="col-md-6 col-lg-4"><div class="card room-card h-100">
+{% if ns2.imgs %}<img src="{{ media_url(ns2.imgs[0]) }}" class="card-img-top" alt="{{ room.name }}">
+{% else %}<div class="card-img-top d-flex align-items-center justify-content-center bg-secondary bg-opacity-25"><i class="bi bi-image text-muted" style="font-size:3rem"></i></div>{% endif %}
+<div class="card-body d-flex flex-column">
+<div class="d-flex justify-content-between align-items-start mb-2">
+<h5 class="card-title mb-0 font-serif">{{ room.name }}</h5>
+<span class="badge {{ 'badge-ac' if room.room_type=='AC' else 'badge-nonac' }}">{{ room.room_type }}</span>
+</div>
+<p class="small text-muted mb-1"><i class="bi bi-people"></i> {{ room.max_guests }} Guests · <i class="bi bi-bed"></i> {{ room.beds }}</p>
+<p class="small mb-2"><i class="bi bi-door-closed"></i> <strong>{{ nums|length }}</strong> rooms: {{ nums|join(', ') }}</p>
+<p class="card-text small flex-grow-1">{{ room.description[:110] }}{% if room.description|length > 110 %}...{% endif %}</p>
+<div class="d-flex justify-content-between align-items-center mt-2">
+<div><span class="price-tag">{{ currency }} {{ '%.0f'|format(room.price_weekday) }}</span><small class="text-muted">/night</small>
+{% if room.price_weekend and room.price_weekend != room.price_weekday %}<br><small class="text-muted">Weekend: {{ currency }} {{ '%.0f'|format(room.price_weekend) }}</small>{% endif %}
+</div>
+<button type="button" class="btn btn-primary btn-sm"
+  data-class-name="{{ room.name|e }}" data-max-guests="{{ room.max_guests }}" data-price="{{ room.price_weekday }}" data-room-type="{{ room.room_type|e }}" data-beds="{{ room.beds|e }}"
+  onclick="openClassBooking(this.getAttribute('data-class-name'), +this.getAttribute('data-max-guests'), +this.getAttribute('data-price'), this.getAttribute('data-room-type'), this.getAttribute('data-beds'))">
+  Book Now
+</button>
+</div></div></div></div>
+{% endif %}
+{% endfor %}
+{# Our Location card — opens Google Maps at Hotel Grand Garden Urlabari #}
+<div class="col-md-6 col-lg-4">
+<a href="https://www.google.com/maps?q=26.664268875548387,87.63354712424926" target="_blank" rel="noopener" class="text-decoration-none text-dark">
+<div class="card room-card h-100 border-0" style="background:linear-gradient(160deg,#1a5f4a 0%,#2d8a6e 100%);color:#fff">
+<div class="card-img-top d-flex align-items-center justify-content-center" style="height:220px;background:rgba(0,0,0,.15)">
+<div class="text-center px-3">
+<i class="bi bi-geo-alt-fill" style="font-size:3.5rem;color:#c9a227"></i>
+<p class="mb-0 mt-2 small opacity-75">Urlabari-5, Morang</p>
+</div>
+</div>
+<div class="card-body d-flex flex-column">
+<h5 class="card-title mb-2 font-serif text-white" data-i18n="card_location">Our Location</h5>
+<p class="small mb-2 opacity-85"><i class="bi bi-pin-map me-1"></i>{{ hotel_location }}</p>
+<p class="card-text small flex-grow-1 opacity-85">Open in Google Maps · Exact pin at Hotel Grand Garden</p>
+<div class="mt-2">
+<span class="btn btn-gold btn-sm" data-i18n="btn_maps">Open Google Maps <i class="bi bi-box-arrow-up-right ms-1"></i></span>
+</div>
+</div>
+</div>
+</a>
+</div>
+</div></div></section>
+
+<section id="amenities" class="py-5 {% if not amenities_bg_image %}bg-white{% endif %}" {% if amenities_bg_image %}style="background-image:linear-gradient(rgba(255,255,255,{{ bg_overlay }}),rgba(255,255,255,{{ bg_overlay }})),url('{{ media_url(amenities_bg_image) }}');background-size:cover;background-position:center"{% endif %}><div class="container">
+<div class="text-center mb-5"><h2 class="section-title font-serif" data-i18n="sec_amenities">Amenities</h2></div>
+<div class="row g-4 text-center">
+{% for a in amenities %}
+<div class="col-6 col-md-4 col-lg-3"><div class="amenity-icon"><i class="bi {{ a.icon }}"></i></div><h6>{{ a.name }}</h6>
+{% if a.description %}<p class="small text-muted">{{ a.description }}</p>{% endif %}</div>
+{% endfor %}
+</div></div></section>
+
+<section id="restaurant" class="py-5" {% if restaurant_bg_image %}style="background-image:linear-gradient(rgba(248,246,240,{{ bg_overlay }}),rgba(248,246,240,{{ bg_overlay }})),url('{{ media_url(restaurant_bg_image) }}');background-size:cover;background-position:center"{% endif %}><div class="container">
+<div class="text-center mb-5"><h2 class="section-title font-serif">Restaurant &amp; Bar</h2><p class="text-muted">Family restaurant serving local &amp; continental favourites</p>
+</div>
+<div class="row g-3">
+{% for item in menu %}
+<div class="col-md-6 col-lg-4"><div class="d-flex gap-3 bg-white p-3 rounded-3 shadow-sm h-100">
+{% if item.image %}<img src="{{ media_url(item.image) }}" alt="" style="width:80px;height:80px;object-fit:cover;border-radius:8px">
+{% else %}<div style="width:80px;height:80px;background:#eee;border-radius:8px;display:flex;align-items:center;justify-content:center"><i class="bi bi-cup-hot text-muted"></i></div>{% endif %}
+<div class="flex-grow-1"><div class="d-flex justify-content-between"><h6 class="mb-1">{{ item.name }}</h6><span class="text-success fw-semibold">{{ currency }} {{ '%.0f'|format(item.price) }}</span></div>
+<small class="text-muted">{{ item.category }}</small><p class="small mb-0 mt-1">{{ item.description }}</p></div>
+</div></div>
+{% endfor %}
+</div></div></section>
+
+<section id="seminar" class="py-5"><div class="container"><div class="row g-4">
+<div class="col-md-6">
+<div class="p-4 rounded-4 h-100 text-white position-relative overflow-hidden" style="min-height:280px;background:{% if seminar_image %}linear-gradient(to top,rgba(0,0,0,.55) 0%,rgba(0,0,0,.2) 50%,rgba(0,0,0,.15) 100%),url('{{ media_url(seminar_image) }}') center/cover no-repeat{% else %}linear-gradient(135deg,#1a5f4a,#144a3a){% endif %}">
+<h3 class="font-serif mb-3">Seminar Hall</h3>
+<p class="mb-2">Capacity: <strong>{{ seminar_capacity }} guests</strong></p>
+<p class="mb-2">Day rate: <strong>{{ currency }} {{ '%.0f'|format(seminar_day_rate) }}</strong></p>
+<p class="mb-4">Hourly: <strong>{{ currency }} {{ '%.0f'|format(seminar_hour_rate) }}</strong></p>
+<button class="btn btn-gold" data-bs-toggle="modal" data-bs-target="#seminarModal">Book Seminar Hall</button>
+</div></div>
+<div class="col-md-6">
+<div class="p-4 rounded-4 h-100 text-white position-relative overflow-hidden" style="min-height:280px;background:{% if outdoor_image %}linear-gradient(to top,rgba(0,0,0,.55) 0%,rgba(0,0,0,.2) 50%,rgba(0,0,0,.15) 100%),url('{{ media_url(outdoor_image) }}') center/cover no-repeat{% else %}linear-gradient(135deg,#2c3e50,#1a1a2e){% endif %}">
+<h3 class="font-serif mb-3">Outdoor Area</h3>
+<p class="mb-2">Capacity: <strong>{{ outdoor_capacity }} guests</strong></p>
+<p class="mb-4">Perfect for weddings, parties &amp; open-air events. {{ parking_info }}</p>
+<a href="https://wa.me/{{ whatsapp }}?text=Hi%2C%20I%20want%20to%20enquire%20about%20outdoor%20event%20booking%20at%20Hotel%20Grand%20Garden" class="btn btn-light" target="_blank">Enquire via WhatsApp</a>
+</div></div>
+</div></div></section>
+
+{% if gallery %}
+<section id="gallery" class="py-5" {% if gallery_bg_image %}style="background-image:linear-gradient(rgba(248,246,240,{{ bg_overlay }}),rgba(248,246,240,{{ bg_overlay }})),url('{{ media_url(gallery_bg_image) }}');background-size:cover;background-position:center"{% endif %}><div class="container">
+<div class="text-center mb-5"><h2 class="section-title font-serif">Gallery</h2></div>
+<div class="row g-3">{% for g in gallery %}<div class="col-6 col-md-4 col-lg-3">
+<img src="{{ media_url(g.image) }}" class="w-100 gallery-img" alt="{{ g.title }}" data-bs-toggle="modal" data-bs-target="#imgModal" onclick="document.getElementById('modalImg').src=this.src">
+</div>{% endfor %}</div></div></section>
+{% endif %}
+
+<section id="reviews" class="py-5 bg-white"><div class="container">
+<div class="text-center mb-5"><h2 class="section-title font-serif">Guest Reviews</h2></div>
+<div class="row g-4">{% for r in reviews %}<div class="col-md-6 col-lg-4">
+<div class="review-card p-3 shadow-sm h-100"><div class="stars mb-2">{% for i in range(r.rating) %}<i class="bi bi-star-fill"></i>{% endfor %}</div>
+<p class="mb-2">"{{ r.comment }}"</p><strong>— {{ r.name }}</strong></div></div>{% endfor %}</div>
+<div class="text-center mt-4"><button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#reviewModal">Write a Review</button></div>
+</div></section>
+
+<section id="contact" class="py-5" {% if contact_bg_image %}style="background-image:linear-gradient(rgba(248,246,240,{{ bg_overlay }}),rgba(248,246,240,{{ bg_overlay }})),url('{{ media_url(contact_bg_image) }}');background-size:cover;background-position:center"{% endif %}><div class="container">
+<div class="text-center mb-5">
+<h2 class="section-title font-serif" data-i18n="sec_location">Our Location</h2>
+<p class="text-muted mb-1"><i class="bi bi-geo-alt-fill text-success me-1"></i>{{ hotel_location }}</p>
+<p class="small text-muted">Urlabari-5, Morang, Nepal · 26.6643°N, 87.6335°E</p>
+</div>
+<div class="row g-4">
+<div class="col-lg-5">
+<div class="bg-white p-4 rounded-4 shadow-sm h-100">
+<h5 class="mb-3 font-serif" data-i18n="sec_contact">Contact Us</h5>
+<p><i class="bi bi-geo-alt-fill text-success me-2"></i>{{ hotel_location }}</p>
+<p><i class="bi bi-telephone-fill text-success me-2"></i><a href="tel:{{ hotel_phone }}">{{ hotel_phone }}</a></p>
+<p><i class="bi bi-envelope-fill text-success me-2"></i>{{ email }}</p>
+<p><i class="bi bi-clock-fill text-success me-2"></i>Check-in {{ checkin_time }} · Check-out {{ checkout_time }}</p>
+<p class="mt-3"><strong>Policies</strong></p>
+<pre class="small text-muted" style="white-space:pre-wrap;font-family:inherit">{{ policies }}</pre>
+</div>
+</div>
+<div class="col-lg-7">
+<div class="bg-white p-4 rounded-4 shadow-sm mb-3">
+<h5 class="mb-3" data-i18n="sec_enquiry">Quick Enquiry</h5>
+<p class="text-muted small">Prefer WhatsApp for fastest response.</p>
+<a href="https://wa.me/{{ whatsapp }}?text=Hi%2C%20I%20would%20like%20to%20book%20a%20room%20at%20Hotel%20Grand%20Garden." class="btn btn-success w-100 mb-2" target="_blank"><i class="bi bi-whatsapp me-2"></i>Chat on WhatsApp</a>
+<a href="tel:{{ hotel_phone }}" class="btn btn-outline-primary w-100"><i class="bi bi-telephone me-2"></i>Call {{ hotel_phone }}</a>
+</div>
+<div class="rounded-4 overflow-hidden shadow-sm border">
+<iframe
+  title="Hotel Grand Garden Location Map"
+  src="https://maps.google.com/maps?q=26.664268875548387,87.63354712424926&z=16&output=embed"
+  width="100%"
+  height="320"
+  style="border:0;display:block"
+  allowfullscreen=""
+  loading="lazy"
+  referrerpolicy="no-referrer-when-downgrade"></iframe>
+<div class="p-2 bg-white text-center small">
+<a href="https://www.google.com/maps?q=26.664268875548387,87.63354712424926" target="_blank" rel="noopener" class="text-decoration-none">
+<i class="bi bi-box-arrow-up-right me-1"></i>Open in Google Maps
+</a>
+</div>
+</div>
+</div>
+</div>
+</div></section>
+{% endif %}
+
+<footer class="py-5 mt-auto"><div class="container"><div class="row">
+<div class="col-md-6 mb-3"><h5 class="text-white font-serif">{{ hotel_name }}</h5><p class="small">{{ about_short }}</p></div>
+<div class="col-md-3 mb-3"><h6 class="text-white">Quick Links</h6><a href="#rooms" data-i18n="nav_rooms">Rooms</a><br><a href="#contact">Our Location</a><br><a href="#restaurant" data-i18n="nav_restaurant">Restaurant</a><br><a href="#seminar" data-i18n="nav_events">Events</a><br><a href="#contact" data-i18n="nav_contact">Contact</a></div>
+<div class="col-md-3 mb-3"><h6 class="text-white">Connect</h6>
+<p class="small mb-1">{{ hotel_phone }}</p>
+<p class="small mb-3">{{ hotel_location }}</p>
+<div class="d-flex gap-2 flex-wrap">
+{% if facebook %}<a href="{{ facebook }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-light rounded-circle" style="width:40px;height:40px;padding:0;display:inline-flex;align-items:center;justify-content:center" title="Facebook"><i class="bi bi-facebook"></i></a>{% endif %}
+{% if instagram %}<a href="{{ instagram }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-light rounded-circle" style="width:40px;height:40px;padding:0;display:inline-flex;align-items:center;justify-content:center" title="Instagram"><i class="bi bi-instagram"></i></a>{% endif %}
+{% if tiktok %}<a href="{{ tiktok }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-light rounded-circle" style="width:40px;height:40px;padding:0;display:inline-flex;align-items:center;justify-content:center" title="TikTok"><i class="bi bi-tiktok"></i></a>{% endif %}
+<a href="https://wa.me/{{ whatsapp }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-light rounded-circle" style="width:40px;height:40px;padding:0;display:inline-flex;align-items:center;justify-content:center" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+</div>
+</div>
+</div><hr class="border-secondary"><p class="small text-center mb-0">{{ footer_text }}</p></div></footer>
+
+<a href="https://wa.me/{{ whatsapp }}?text=Hi%2C%20I%20want%20to%20book%20a%20room%20at%20Hotel%20Grand%20Garden.%20Please%20share%20availability." class="whatsapp-float" target="_blank" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+
+<!-- Auth Modal -->
+<div class="modal fade" id="authModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+<div class="modal-header"><h5 class="modal-title">Login / Sign Up</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+<div class="modal-body">
+<ul class="nav nav-pills mb-3" role="tablist">
+<li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#loginTab">Login</button></li>
+<li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#regTab">Sign Up</button></li>
+</ul>
+<div class="tab-content">
+<div class="tab-pane fade show active" id="loginTab">
+<form method="POST" action="{{ url_for('login') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<div class="mb-3"><label class="form-label">Email or Phone</label>
+<input type="text" name="login" class="form-control" required placeholder="email@example.com or 98XXXXXXXX" autocomplete="username">
+<small class="text-muted">Sign up गर्दा दिएको email वा phone number</small></div>
+<div class="mb-3"><label class="form-label">Password</label><input type="password" name="password" class="form-control" required autocomplete="current-password"></div>
+<button type="submit" class="btn btn-primary w-100">Login</button></form>
+</div>
+<div class="tab-pane fade" id="regTab">
+<form method="POST" action="{{ url_for('register') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<div class="mb-3"><label class="form-label">Full Name</label><input type="text" name="name" class="form-control" required></div>
+<div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required></div>
+<div class="mb-3"><label class="form-label">Phone *</label><input type="tel" name="phone" class="form-control" required placeholder="98XXXXXXXX"></div>
+<div class="mb-3"><label class="form-label">Password</label><input type="password" name="password" class="form-control" required minlength="6"></div>
+<button type="submit" class="btn btn-primary w-100">Create Account</button></form>
+</div>
+</div></div></div></div></div>
+
+<!-- Booking Modal -->
+<div class="modal fade" id="bookingModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+<div class="modal-header"><h5 class="modal-title">Book: <span id="bkRoomName"></span></h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+<form method="POST" action="{{ url_for('book_room') }}" id="bookingForm" enctype="multipart/form-data">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<div class="modal-body"><div class="row g-3">
+<div class="col-12"><div class="alert alert-light border py-2 mb-0 small" id="bkClassInfo">Select dates to see available room numbers</div></div>
+<div class="col-md-6"><label class="form-label">Check-in</label><input type="date" name="check_in" id="bkCheckIn" class="form-control" required></div>
+<div class="col-md-6"><label class="form-label">Check-out</label><input type="date" name="check_out" id="bkCheckOut" class="form-control" required></div>
+<div class="col-md-6"><label class="form-label">Room Number *</label>
+<select name="room_id" id="bkRoomSelect" class="form-select" required onchange="onRoomSelect()">
+<option value="">— Select dates first —</option>
+</select>
+<small class="text-muted" id="bkRoomHint">Available rooms appear after selecting dates</small>
+</div>
+<div class="col-md-3"><label class="form-label">Guests</label><input type="number" name="guests" id="bkGuests" class="form-control" min="1" value="1" required></div>
+<div class="col-md-3"><label class="form-label">Coupon</label><div class="input-group"><input type="text" name="coupon_code" id="bkCoupon" class="form-control" placeholder="Code"><button type="button" class="btn btn-outline-secondary" onclick="applyCoupon()">Go</button></div></div>
+<input type="hidden" id="bkRoomId" value="">
+<input type="hidden" id="bkClassName" value="">
+<div class="col-12"><label class="form-label">Special Requests</label><textarea name="special_requests" class="form-control" rows="2"></textarea></div>
+<div class="col-12"><div class="booking-summary" id="bkSummary"><p class="mb-1">Select dates to see price</p></div></div>
+<div class="col-md-6"><label class="form-label">Payment Method</label>
+<select name="payment_method" id="bkPayMethod" class="form-select" required onchange="toggleOnlinePay()">
+<option value="esewa">eSewa</option>
+<option value="khalti">Khalti</option>
+<option value="bank">Bank Transfer</option>
+</select></div>
+<div class="col-md-6"><label class="form-label">Advance Amount ({{ currency }}) *</label>
+<input type="number" name="advance_amount" id="bkAdvance" class="form-control" min="1" step="1" required>
+<small class="text-muted">Mandatory for confirmation</small></div>
+<div class="col-12" id="onlinePayBox">
+  <div class="alert alert-info py-3">
+    <p class="mb-2 fw-semibold"><i class="bi bi-qr-code me-1"></i> Scan QR to pay (eSewa / Khalti / Bank)</p>
+    <div class="text-center mb-3">
+      <img src="https://i.ibb.co/35JR89kH/qrhg.jpg" alt="Payment QR" class="img-fluid rounded border" style="max-width:260px">
+    </div>
+    <p class="small mb-2">Pay the <strong>Advance Amount</strong> using the QR above, then upload your payment screenshot/statement below.</p>
+    <div class="mb-2">
+      <label class="form-label">Transaction ID</label>
+      <input type="text" name="transaction_id" id="bkTxn" class="form-control" placeholder="eSewa / Khalti / Bank reference no.">
+    </div>
+    <div>
+      <label class="form-label">Payment Statement / Screenshot *</label>
+      <input type="file" name="payment_proof" id="bkProof" class="form-control" accept="image/*" required>
+      <small class="text-muted">JPG/PNG of payment confirmation required to complete booking</small>
+    </div>
+  </div>
+</div>
+</div><div id="availMsg" class="mt-2"></div></div>
+<div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+<button type="submit" class="btn btn-primary" id="bkSubmit" disabled>Confirm Booking</button></div>
+</form></div></div></div>
+
+<!-- Seminar Modal -->
+<div class="modal fade" id="seminarModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content">
+<div class="modal-header"><h5 class="modal-title">Book Seminar Hall</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+<form method="POST" action="{{ url_for('book_seminar') }}" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<div class="modal-body">
+<div class="row g-3">
+<div class="col-md-6"><label class="form-label">Event Date</label><input type="date" name="event_date" class="form-control" required></div>
+<div class="col-md-6"><label class="form-label">Rate Type</label>
+<select name="rate_type" class="form-select" id="semRateType" onchange="updateSemTotal()">
+<option value="hourly">Hourly ({{ currency }} {{ '%.0f'|format(seminar_hour_rate) }}/hr)</option>
+<option value="daily">Full Day ({{ currency }} {{ '%.0f'|format(seminar_day_rate) }})</option>
+</select></div>
+<div class="col-md-6" id="semHoursWrap"><label class="form-label">Hours</label><input type="number" name="hours" id="semHours" class="form-control" value="4" min="1" step="0.5" onchange="updateSemTotal()"></div>
+<div class="col-md-6"><label class="form-label">Expected Guests</label><input type="number" name="capacity" class="form-control" value="50" max="{{ seminar_capacity }}"></div>
+<div class="col-md-6"><label class="form-label">Contact Name</label><input type="text" name="contact_name" class="form-control" value="{{ current_user.name if current_user.is_authenticated else '' }}"></div>
+<div class="col-md-6"><label class="form-label">Phone</label><input type="tel" name="contact_phone" class="form-control" value="{{ current_user.phone if current_user.is_authenticated else '' }}"></div>
+<div class="col-12"><label class="form-label">Notes</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+<div class="col-md-6"><label class="form-label">Payment Method</label>
+<select name="payment_method" id="semPayMethod" class="form-select" required onchange="toggleSemOnlinePay()">
+<option value="esewa">eSewa</option>
+<option value="khalti">Khalti</option>
+<option value="bank">Bank Transfer</option>
+</select></div>
+<div class="col-md-6"><label class="form-label">Advance Amount ({{ currency }}) *</label>
+<input type="number" name="advance_amount" id="semAdvance" class="form-control" min="1" required>
+<small class="text-muted">Mandatory advance</small></div>
+<div class="col-12" id="semOnlinePayBox">
+  <div class="alert alert-info py-3">
+    <p class="mb-2 fw-semibold"><i class="bi bi-qr-code me-1"></i> Scan QR to pay advance (eSewa / Khalti / Bank)</p>
+    <div class="text-center mb-3">
+      <img src="https://i.ibb.co/35JR89kH/qrhg.jpg" alt="Payment QR" class="img-fluid rounded border" style="max-width:240px">
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Transaction ID</label>
+      <input type="text" name="transaction_id" class="form-control" placeholder="eSewa / Khalti / Bank reference">
+    </div>
+    <div>
+      <label class="form-label">Payment Statement / Screenshot *</label>
+      <input type="file" name="payment_proof" id="semProof" class="form-control" accept="image/*" required>
+      <small class="text-muted">Required — upload advance payment screenshot to complete booking</small>
+    </div>
+  </div>
+</div>
+<div class="col-12"><p class="fw-semibold mb-0" id="semTotal">Estimated: {{ currency }} {{ '%.0f'|format(seminar_hour_rate * 4) }}</p></div>
+</div>
+</div>
+<div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary">Book Hall</button></div>
+</form></div></div></div>
+
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+<div class="modal-header"><h5 class="modal-title">Write a Review</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+<form method="POST" action="{{ url_for('submit_review') }}" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<div class="modal-body">
+<div class="mb-3"><label class="form-label">Name</label><input type="text" name="name" class="form-control" required></div>
+<div class="mb-3"><label class="form-label">Rating</label><select name="rating" class="form-select"><option value="5">5 Stars</option><option value="4">4 Stars</option><option value="3">3 Stars</option><option value="2">2 Stars</option><option value="1">1 Star</option></select></div>
+<div class="mb-3"><label class="form-label">Comment</label><textarea name="comment" class="form-control" rows="3" required></textarea></div>
+<div class="mb-3"><label class="form-label">Photo (optional)</label><input type="file" name="image" class="form-control" accept="image/*"></div>
+</div>
+<div class="modal-footer"><button type="submit" class="btn btn-primary">Submit</button></div>
+</form></div></div></div>
+
+<div class="modal fade" id="imgModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content bg-transparent border-0"><img id="modalImg" class="w-100 rounded" src=""></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const currency='{{ currency }}',hourRate={{ seminar_hour_rate }},dayRate={{ seminar_day_rate }};
+let currentTotal=0;
+const today=new Date().toISOString().split('T')[0];
+document.querySelectorAll('input[type=date]').forEach(el=>{if(!el.min)el.min=today});
+let roomBasePrice=0;
+let selectedClassName='';
+function setAdvance(total){
+  const adv=document.getElementById('bkAdvance');
+  if(!adv)return;
+  const t=Math.max(0, Number(total)||0);
+  currentTotal=t;
+  adv.removeAttribute('max');
+  if(t>0){ adv.min=1; adv.max=t; adv.value=Math.max(1, Math.ceil(t*0.3)); }
+  else { adv.min=1; adv.value=''; }
+}
+function openClassBooking(className, maxG, price, roomType, beds){
+  selectedClassName=className;
+  roomBasePrice=Number(price)||0;
+  document.getElementById('bkClassName').value=className;
+  document.getElementById('bkRoomName').textContent=className;
+  document.getElementById('bkClassInfo').innerHTML=
+    `<strong>${className}</strong> · ${roomType} · ${beds} · Max ${maxG} guests · From ${currency} ${roomBasePrice}/night`;
+  document.getElementById('bkGuests').max=maxG||10;
+  document.getElementById('bkGuests').value=1;
+  document.getElementById('bkRoomSelect').innerHTML='<option value="">— Select dates first —</option>';
+  document.getElementById('bkRoomId').value='';
+  document.getElementById('bkSummary').innerHTML='<p class="mb-1">Select dates, then choose a room number</p>';
+  document.getElementById('bkSubmit').disabled=true;
+  document.getElementById('availMsg').innerHTML='';
+  document.getElementById('bkCheckIn').value='';
+  document.getElementById('bkCheckOut').value='';
+  setAdvance(0);
+  new bootstrap.Modal(document.getElementById('bookingModal')).show();
+}
+function openBooking(id,name,maxG,price){
+  // legacy single-room open
+  openClassBooking(name, maxG, price, '', '');
+  document.getElementById('bkRoomSelect').innerHTML=`<option value="${id}" selected>${name}</option>`;
+  document.getElementById('bkRoomId').value=id;
+}
+document.getElementById('bkCheckIn')?.addEventListener('change',loadAvailableRooms);
+document.getElementById('bkCheckOut')?.addEventListener('change',loadAvailableRooms);
+function loadAvailableRooms(){
+  const ci=document.getElementById('bkCheckIn').value;
+  const co=document.getElementById('bkCheckOut').value;
+  const className=(document.getElementById('bkClassName').value || selectedClassName || '').trim();
+  if(!ci||!co||!className)return;
+  if(co<=ci){
+    const sel=document.getElementById('bkRoomSelect');
+    sel.innerHTML='<option value="">Check-out must be after check-in</option>';
+    const msg=document.getElementById('availMsg');
+    if(msg) msg.innerHTML='<div class="alert alert-danger py-2">Check-out date must be after check-in</div>';
+    return;
+  }
+  const sel=document.getElementById('bkRoomSelect');
+  const msg=document.getElementById('availMsg');
+  sel.innerHTML='<option value="">Loading rooms...</option>';
+  document.getElementById('bkSubmit').disabled=true;
+  if(msg) msg.innerHTML='<div class="alert alert-light py-2">Checking availability...</div>';
+
+  const ctrl=new AbortController();
+  const timer=setTimeout(function(){ ctrl.abort(); }, 12000);
+
+  const url='/api/available-rooms?class_name='+encodeURIComponent(className)+
+            '&check_in='+encodeURIComponent(ci)+'&check_out='+encodeURIComponent(co);
+
+  fetch(url, { method:'GET', signal: ctrl.signal, credentials:'same-origin' })
+  .then(function(r){
+    if(!r.ok) throw new Error('Server error '+r.status);
+    return r.json();
+  })
+  .then(function(d){
+    clearTimeout(timer);
+    if(d.error){
+      sel.innerHTML='<option value="">— Error —</option>';
+      if(msg) msg.innerHTML='<div class="alert alert-danger py-2">'+d.error+'</div>';
+      return;
+    }
+    if(!d.rooms || !d.rooms.length){
+      sel.innerHTML='<option value="">No rooms available</option>';
+      if(msg) msg.innerHTML='<div class="alert alert-warning py-2">No rooms available for these dates. Try other dates.</div>';
+      document.getElementById('bkSummary').innerHTML='<p class="mb-1">Try different dates</p>';
+      return;
+    }
+    sel.innerHTML='<option value="">— Select room number —</option>'+
+      d.rooms.map(function(r){
+        return '<option value="'+r.id+'" data-total="'+r.total+'" data-price="'+r.price_per_night+'" data-nights="'+r.nights+
+               '">Room '+r.number+' — '+currency+' '+r.total+' ('+r.nights+'n)</option>';
+      }).join('');
+    if(msg) msg.innerHTML='<div class="alert alert-success py-2">'+d.rooms.length+' room(s) available — select a room number</div>';
+    const hint=document.getElementById('bkRoomHint');
+    if(hint) hint.textContent=d.rooms.map(function(r){return r.number;}).join(', ');
+  })
+  .catch(function(err){
+    clearTimeout(timer);
+    console.error('loadAvailableRooms', err);
+    sel.innerHTML='<option value="">Could not load — retry</option>';
+    if(msg) msg.innerHTML='<div class="alert alert-danger py-2">Could not load rooms. Check dates and try again. ('+(err.message||'network')+')</div>';
+  });
+}
+function onRoomSelect(){
+  const sel=document.getElementById('bkRoomSelect');
+  const opt=sel.options[sel.selectedIndex];
+  const id=sel.value;
+  document.getElementById('bkRoomId').value=id;
+  // ensure form posts room_id - the select has name=room_id
+  if(!id){
+    document.getElementById('bkSubmit').disabled=true;
+    return;
+  }
+  const total=Number(opt.dataset.total)||0;
+  const price=Number(opt.dataset.price)||0;
+  const nights=Number(opt.dataset.nights)||0;
+  currentTotal=total;
+  document.getElementById('bkSummary').innerHTML=
+    `<p class="mb-1">${nights} night(s) × ${currency} ${price} = <strong>${currency} ${total}</strong></p>
+     <p class="mb-0 small text-muted">Selected: ${opt.textContent}</p>`;
+  setAdvance(total);
+  document.getElementById('bkSubmit').disabled = total<=0;
+  document.getElementById('availMsg').innerHTML='<div class="alert alert-success py-2">Room selected — complete payment to book</div>';
+}
+function applyCoupon(){
+  const code=document.getElementById('bkCoupon').value;
+  if(!code||!currentTotal)return;
+  fetch('/api/apply-coupon',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({code,amount:currentTotal})
+  }).then(r=>r.json()).then(d=>{
+    if(d.valid){
+      const final=Math.max(0, currentTotal-d.discount);
+      document.getElementById('bkSummary').innerHTML+=`<p class="text-success mb-0">Coupon: -${currency} ${d.discount} → <strong>${currency} ${final}</strong></p>`;
+      setAdvance(final);
+    }else alert(d.message||'Invalid coupon');
+  });
+}
+function toggleSemOnlinePay(){
+  const box=document.getElementById('semOnlinePayBox');
+  const proof=document.getElementById('semProof');
+  if(box) box.style.display='block';
+  if(proof) proof.required=true;
+}
+function toggleOnlinePay(){
+  const box=document.getElementById('onlinePayBox');
+  const proof=document.getElementById('bkProof');
+  if(box) box.style.display='block';
+  if(proof) proof.required=true;
+}
+document.getElementById('bookingForm')?.addEventListener('submit',function(e){
+  const roomId=document.getElementById('bkRoomSelect')?.value || document.getElementById('bkRoomId')?.value;
+  if(!roomId){
+    e.preventDefault();
+    alert('Please select dates and a room number first.');
+    return;
+  }
+  const adv=Number(document.getElementById('bkAdvance')?.value||0);
+  if(adv<=0){
+    e.preventDefault();
+    alert('Please enter advance payment amount.');
+    return;
+  }
+  const proof=document.getElementById('bkProof');
+  if(!proof||!proof.files||!proof.files.length){
+    e.preventDefault();
+    alert('Please pay via QR and upload payment statement/screenshot to book.');
+    return;
+  }
+});
+if(location.hash==='#authModal')new bootstrap.Modal(document.getElementById('authModal')).show();
+</script>
+
+<script>
+(function(){
+  function applyTheme(dark){
+    document.body.classList.toggle('dark-mode', dark);
+    localStorage.setItem('hg_dark', dark ? '1' : '0');
+    const icon = document.querySelector('#darkToggle i');
+    if (icon) icon.className = dark ? 'bi bi-sun' : 'bi bi-moon-stars';
+  }
+  const dt = document.getElementById('darkToggle');
+  if (dt) dt.addEventListener('click', function(){
+    applyTheme(!document.body.classList.contains('dark-mode'));
+  });
+  applyTheme(localStorage.getItem('hg_dark') === '1');
+})();
+</script>
+
+</body>
+</html>

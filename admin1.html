@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin – {{ hotel_name }}</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--primary:{{ primary_color }};--secondary:{{ secondary_color }};--sidebar:#1a1a2e}
+*{font-family:'Poppins',sans-serif}body{background:#f0f2f5}
+.sidebar{width:260px;min-height:100vh;background:var(--sidebar);color:#ccc;position:fixed;left:0;top:0;overflow-y:auto;z-index:100}
+.sidebar .brand{padding:1.25rem;color:#fff;font-weight:600;border-bottom:1px solid #333}
+.sidebar .nav-link{color:#aaa;padding:.65rem 1.25rem;border-radius:0}
+.sidebar .nav-link:hover,.sidebar .nav-link.active{background:rgba(255,255,255,.08);color:#fff}
+.sidebar .nav-link i{width:22px}
+.main{margin-left:260px;padding:1.5rem}
+.stat-card{border:none;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.stat-card .icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem}
+.card{border:none;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.table th{font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.5px}
+.btn-primary{background:var(--primary);border-color:var(--primary)}.btn-primary:hover{background:#144a3a;border-color:#144a3a}
+@media(max-width:991px){.sidebar{width:100%;min-height:auto;position:relative}.main{margin-left:0}}
+</style>
+</head>
+<body>
+<div class="d-flex flex-column flex-lg-row">
+<nav class="sidebar">
+<div class="brand"><i class="bi bi-building me-2"></i>Admin Panel</div>
+<ul class="nav flex-column py-2">
+<li><a class="nav-link {{ 'active' if section=='dashboard' else '' }}" href="{{ url_for('admin_dashboard') }}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+<li><a class="nav-link {{ 'active' if section=='hotel' else '' }}" href="{{ url_for('admin_section', section='hotel') }}"><i class="bi bi-info-circle"></i> Hotel Info</a></li>
+<li><a class="nav-link {{ 'active' if section=='rooms' else '' }}" href="{{ url_for('admin_section', section='rooms') }}"><i class="bi bi-door-open"></i> Rooms</a></li>
+<li><a class="nav-link {{ 'active' if section=='bookings' else '' }}" href="{{ url_for('admin_section', section='bookings') }}"><i class="bi bi-calendar-check"></i> Bookings</a></li>
+<li><a class="nav-link {{ 'active' if section=='customers' else '' }}" href="{{ url_for('admin_section', section='customers') }}"><i class="bi bi-people"></i> Customers</a></li>
+<li><a class="nav-link {{ 'active' if section=='payments' else '' }}" href="{{ url_for('admin_section', section='payments') }}"><i class="bi bi-credit-card"></i> Payments</a></li>
+<li><a class="nav-link {{ 'active' if section=='menu' else '' }}" href="{{ url_for('admin_section', section='menu') }}"><i class="bi bi-cup-hot"></i> Restaurant Menu</a></li>
+<li><a class="nav-link {{ 'active' if section=='gallery' else '' }}" href="{{ url_for('admin_section', section='gallery') }}"><i class="bi bi-images"></i> Gallery</a></li>
+<li><a class="nav-link {{ 'active' if section=='reviews' else '' }}" href="{{ url_for('admin_section', section='reviews') }}"><i class="bi bi-star"></i> Reviews</a></li>
+<li><a class="nav-link {{ 'active' if section=='amenities' else '' }}" href="{{ url_for('admin_section', section='amenities') }}"><i class="bi bi-grid"></i> Amenities</a></li>
+<li><a class="nav-link {{ 'active' if section=='sliders' else '' }}" href="{{ url_for('admin_section', section='sliders') }}"><i class="bi bi-collection-play"></i> Hero Slider</a></li>
+<li><a class="nav-link {{ 'active' if section=='coupons' else '' }}" href="{{ url_for('admin_section', section='coupons') }}"><i class="bi bi-ticket-perforated"></i> Coupons</a></li>
+<li><a class="nav-link {{ 'active' if section=='seminar' else '' }}" href="{{ url_for('admin_section', section='seminar') }}"><i class="bi bi-building"></i> Seminar / Outdoor</a></li>
+<li><a class="nav-link {{ 'active' if section=='reports' else '' }}" href="{{ url_for('admin_section', section='reports') }}"><i class="bi bi-graph-up"></i> Reports</a></li>
+<li><a class="nav-link {{ 'active' if section=='seo' else '' }}" href="{{ url_for('admin_section', section='seo') }}"><i class="bi bi-search"></i> SEO</a></li>
+<li><a class="nav-link {{ 'active' if section=='theme' else '' }}" href="{{ url_for('admin_section', section='theme') }}"><i class="bi bi-palette"></i> Theme</a></li>
+<li><a class="nav-link {{ 'active' if section=='backup' else '' }}" href="{{ url_for('admin_section', section='backup') }}"><i class="bi bi-cloud-download"></i> Backup</a></li>
+<li class="mt-3"><a class="nav-link" href="{{ url_for('index') }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i> View Site</a></li>
+<li><a class="nav-link" href="{{ url_for('logout') }}"><i class="bi bi-box-arrow-left"></i> Logout</a></li>
+</ul>
+</nav>
+
+<main class="main flex-grow-1">
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}{% for cat, msg in messages %}<div class="alert alert-{{ cat }} alert-dismissible fade show">{{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}
+{% endwith %}
+
+{% if section == 'dashboard' %}
+<h4 class="mb-4">Dashboard</h4>
+{% set st = stats if stats is defined else data.get('stats', {}) %}
+<div class="row g-3 mb-4">
+<div class="col-6 col-md-4 col-xl-2"><div class="card stat-card p-3"><div class="d-flex align-items-center gap-3"><div class="icon bg-primary bg-opacity-10 text-primary"><i class="bi bi-door-open"></i></div><div><div class="text-muted small">Rooms</div><div class="fs-4 fw-semibold">{{ st.get('rooms', 0) }}</div></div></div></div></div>
+<div class="col-6 col-md-4 col-xl-2"><div class="card stat-card p-3"><div class="d-flex align-items-center gap-3"><div class="icon bg-success bg-opacity-10 text-success"><i class="bi bi-calendar-check"></i></div><div><div class="text-muted small">Bookings</div><div class="fs-4 fw-semibold">{{ st.get('bookings', 0) }}</div></div></div></div></div>
+<div class="col-6 col-md-4 col-xl-2"><div class="card stat-card p-3"><div class="d-flex align-items-center gap-3"><div class="icon bg-info bg-opacity-10 text-info"><i class="bi bi-people"></i></div><div><div class="text-muted small">Customers</div><div class="fs-4 fw-semibold">{{ st.get('customers', 0) }}</div></div></div></div></div>
+<div class="col-6 col-md-4 col-xl-2"><div class="card stat-card p-3"><div class="d-flex align-items-center gap-3"><div class="icon bg-warning bg-opacity-10 text-warning"><i class="bi bi-currency-rupee"></i></div><div><div class="text-muted small">Revenue</div><div class="fs-5 fw-semibold">{{ currency }} {{ '%.0f'|format(st.get('revenue', 0)) }}</div></div></div></div></div>
+<div class="col-6 col-md-4 col-xl-2"><div class="card stat-card p-3"><div class="d-flex align-items-center gap-3"><div class="icon bg-secondary bg-opacity-10"><i class="bi bi-hourglass"></i></div><div><div class="text-muted small">Pending</div><div class="fs-4 fw-semibold">{{ st.get('pending', 0) }}</div></div></div></div></div>
+<div class="col-6 col-md-4 col-xl-2"><div class="card stat-card p-3"><div class="d-flex align-items-center gap-3"><div class="icon bg-success bg-opacity-10 text-success"><i class="bi bi-check-circle"></i></div><div><div class="text-muted small">Confirmed</div><div class="fs-4 fw-semibold">{{ st.get('confirmed', 0) }}</div></div></div></div></div>
+</div>
+<div class="card"><div class="card-header bg-white fw-semibold">Recent Bookings</div>
+<div class="table-responsive"><table class="table table-hover mb-0"><thead><tr><th>Ref</th><th>Guest</th><th>Room</th><th>Dates</th><th>Amount</th><th>Status</th></tr></thead>
+<tbody>{% set recent_list = recent if recent is defined else data.get('recent', []) %}
+{% for b in recent_list %}<tr>
+<td>{{ b.booking_ref }}</td><td>{{ b.user.name if b.user else '—' }}</td><td>{{ b.room.number if b.room else '—' }}</td>
+<td>{{ b.check_in }} → {{ b.check_out }}</td><td>{{ currency }} {{ '%.0f'|format(b.total_amount) }}</td>
+<td><span class="badge bg-{{ 'success' if b.booking_status=='confirmed' else 'warning' }}">{{ b.booking_status }}</span></td>
+</tr>{% else %}<tr><td colspan="6" class="text-muted text-center">No bookings yet</td></tr>{% endfor %}
+</tbody></table></div></div>
+
+{% elif section == 'hotel' %}
+<h4 class="mb-4">Hotel Info</h4>
+<div class="card p-4"><form method="POST">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="save_settings">
+<div class="row g-3">
+<div class="col-md-6"><label class="form-label">Hotel Name</label><input type="text" name="hotel_name" class="form-control" value="{{ hotel_name }}"></div>
+<div class="col-md-6"><label class="form-label">Phone</label><input type="text" name="hotel_phone" class="form-control" value="{{ hotel_phone }}"></div>
+<div class="col-md-6"><label class="form-label">Location</label><input type="text" name="hotel_location" class="form-control" value="{{ hotel_location }}"></div>
+<div class="col-md-6"><label class="form-label">Email</label><input type="text" name="email" class="form-control" value="{{ email }}"></div>
+<div class="col-md-6"><label class="form-label">WhatsApp</label><input type="text" name="whatsapp" class="form-control" value="{{ whatsapp }}"></div>
+<div class="col-md-6"><label class="form-label">Currency</label><input type="text" name="currency" class="form-control" value="{{ currency }}"></div>
+<div class="col-md-6"><label class="form-label">Check-in</label><input type="text" name="checkin_time" class="form-control" value="{{ checkin_time }}"></div>
+<div class="col-md-6"><label class="form-label">Check-out</label><input type="text" name="checkout_time" class="form-control" value="{{ checkout_time }}"></div>
+<div class="col-12"><label class="form-label">About</label><textarea name="about_short" class="form-control" rows="2">{{ about_short }}</textarea></div>
+<div class="col-12"><label class="form-label">Policies</label><textarea name="policies" class="form-control" rows="3">{{ policies }}</textarea></div>
+<div class="col-12"><label class="form-label">Footer</label><input type="text" name="footer_text" class="form-control" value="{{ footer_text }}"></div>
+<div class="col-12"><button class="btn btn-primary">Save Hotel Info</button></div>
+</div></form></div>
+
+{% elif section == 'rooms' %}
+<h4 class="mb-4">Rooms <a href="?edit=new" class="btn btn-sm btn-primary" data-bs-toggle="collapse" data-bs-target="#roomForm">+ Add</a></h4>
+<div class="collapse {{ 'show' if data.get('edit_room') else '' }} mb-4" id="roomForm"><div class="card p-4">
+{% set er = data.get('edit_room') %}
+<form method="POST" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="save_room">
+{% if er %}<input type="hidden" name="room_id" value="{{ er.id }}">{% endif %}
+<div class="row g-3">
+<div class="col-md-2"><label class="form-label">Number</label><input type="text" name="number" class="form-control" value="{{ er.number if er else '' }}" required></div>
+<div class="col-md-4"><label class="form-label">Name (class)</label><input type="text" name="name" class="form-control" value="{{ er.name if er else '' }}" required></div>
+<div class="col-md-3"><label class="form-label">Type</label><input type="text" name="room_type" class="form-control" value="{{ er.room_type if er else 'Non AC' }}"></div>
+<div class="col-md-3"><label class="form-label">Beds</label><input type="text" name="beds" class="form-control" value="{{ er.beds if er else '' }}"></div>
+<div class="col-md-2"><label class="form-label">Guests</label><input type="number" name="max_guests" class="form-control" value="{{ er.max_guests if er else 2 }}"></div>
+<div class="col-md-2"><label class="form-label">Weekday Rs</label><input type="number" name="price_weekday" class="form-control" value="{{ er.price_weekday if er else 0 }}" step="1"></div>
+<div class="col-md-2"><label class="form-label">Weekend Rs</label><input type="number" name="price_weekend" class="form-control" value="{{ er.price_weekend if er else 0 }}" step="1"></div>
+<div class="col-md-2"><label class="form-label">Discount %</label><input type="number" name="discount_percent" class="form-control" value="{{ er.discount_percent if er else 0 }}" step="1"></div>
+<div class="col-md-4"><label class="form-label">Amenities (comma)</label><input type="text" name="amenities" class="form-control" value="{{ er.get_amenities()|join(', ') if er else '' }}"></div>
+<div class="col-md-6"><label class="form-label">Photos</label><input type="file" name="images" class="form-control" accept="image/*" multiple>
+<small class="text-muted">Apply to entire class when uploading</small></div>
+<div class="col-md-3 form-check mt-4"><input type="checkbox" name="apply_class_images" class="form-check-input" id="aci" checked><label for="aci" class="form-check-label">Apply photos to class</label></div>
+<div class="col-md-3 form-check mt-4"><input type="checkbox" name="is_available" class="form-check-input" id="av" {{ 'checked' if not er or er.is_available else '' }}><label for="av" class="form-check-label">Available</label></div>
+{% if er and er.get_images() %}<div class="col-12"><label class="form-label">Current (check to remove)</label><div class="d-flex flex-wrap gap-2">
+{% for img in er.get_images() %}<label><img src="{{ media_url(img) }}" style="height:50px;border-radius:6px"> <input type="checkbox" name="remove_image" value="{{ img }}"></label>{% endfor %}
+</div></div>{% endif %}
+<div class="col-12"><button class="btn btn-primary">Save Room</button></div>
+</div></form></div></div>
+
+<div class="card mb-4"><div class="card-header bg-white fw-semibold">Room Class Photos</div>
+<div class="card-body"><div class="row g-3">
+{% set ns = namespace(seen=[]) %}
+{% for r in data.get('rooms', []) %}
+{% if r.name not in ns.seen %}{% set _ = ns.seen.append(r.name) %}
+{% set cimgs = r.get_images() %}
+<div class="col-md-4"><div class="border rounded p-3">
+<strong>{{ r.name }}</strong>
+{% if cimgs %}<div class="my-2"><img src="{{ media_url(cimgs[0]) }}" style="height:60px;border-radius:6px"></div>{% endif %}
+<form method="POST" enctype="multipart/form-data">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="save_class_images">
+<input type="hidden" name="class_name" value="{{ r.name }}">
+<input type="file" name="images" class="form-control form-control-sm mb-2" accept="image/*" multiple>
+<button class="btn btn-sm btn-primary w-100">Upload Class Photo</button>
+</form></div></div>
+{% endif %}{% endfor %}
+</div></div></div>
+
+<div class="card"><div class="table-responsive"><table class="table table-hover mb-0">
+<thead><tr><th>Photo</th><th>#</th><th>Name</th><th>Type</th><th>Beds</th><th>Guests</th><th>Weekday</th><th>Weekend</th><th>Status</th><th></th></tr></thead>
+<tbody>{% for r in data.get('rooms', []) %}<tr>
+<td>{% set ri=r.get_images() %}{% if ri %}<img src="{{ media_url(ri[0]) }}" style="height:36px;width:48px;object-fit:cover;border-radius:4px">{% else %}—{% endif %}</td>
+<td>{{ r.number }}</td><td>{{ r.name }}</td><td>{{ r.room_type }}</td><td>{{ r.beds }}</td><td>{{ r.max_guests }}</td>
+<td>{{ currency }} {{ '%.0f'|format(r.price_weekday) }}</td><td>{{ currency }} {{ '%.0f'|format(r.price_weekend) }}</td>
+<td><span class="badge bg-{{ 'success' if r.is_available else 'secondary' }}">{{ 'On' if r.is_available else 'Off' }}</span></td>
+<td><a href="?edit={{ r.id }}" class="btn btn-sm btn-outline-primary">Edit</a>
+<form method="POST" class="d-inline" onsubmit="return confirm('Delete?')"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="delete_room"><input type="hidden" name="room_id" value="{{ r.id }}"><button class="btn btn-sm btn-outline-danger">Del</button></form></td>
+</tr>{% endfor %}</tbody></table></div></div>
+
+{% elif section == 'bookings' %}
+<h4 class="mb-4">Bookings</h4>
+<div class="card mb-4"><div class="card-header bg-white fw-semibold">Room Bookings — Customer Details</div>
+<div class="table-responsive"><table class="table table-sm table-hover mb-0 align-middle">
+<thead class="table-light"><tr><th>Booking</th><th>Customer</th><th>Room & Stay</th><th>Payment</th><th>Actions</th></tr></thead>
+<tbody>
+{% for b in data.get('bookings', []) %}
+<tr>
+<td><strong>{{ b.booking_ref }}</strong><br><small class="text-muted">{{ b.created_at.strftime('%Y-%m-%d %H:%M') if b.created_at else '' }}</small></td>
+<td>{% if b.user %}<strong>{{ b.user.name }}</strong><br><small>{{ b.user.email }}</small><br><small>{{ b.user.phone or '—' }}</small>{% else %}—{% endif %}
+{% if b.special_requests %}<div class="small text-warning">{{ b.special_requests }}</div>{% endif %}</td>
+<td>{% if b.room %}<strong>Rm {{ b.room.number }}</strong> {{ b.room.name }}<br>{% endif %}
+<small>In {{ b.check_in }} · Out {{ b.check_out }}</small><br><small>{{ b.nights() }}n · {{ b.guests }} guests</small></td>
+<td>Total <strong>{{ currency }} {{ '%.0f'|format(b.total_amount or 0) }}</strong><br>
+Adv {{ currency }} {{ '%.0f'|format(b.advance_paid or 0) }}<br>
+<span class="badge bg-secondary">{{ b.payment_method or '—' }}</span>
+<span class="badge bg-{{ 'success' if b.payment_status=='paid' else 'warning' }}">{{ b.payment_status }}</span>
+{% if b.transaction_id %}<br><small>Txn: {{ b.transaction_id }}</small>{% endif %}
+{% if b.payment_proof %}<br><a href="{{ url_for('view_booking_proof', booking_id=b.id) }}" target="_blank" class="btn btn-sm btn-outline-info mt-1">Proof</a>
+<img src="{{ url_for('view_booking_proof', booking_id=b.id) }}" style="max-height:56px;border-radius:4px;display:block;margin-top:4px">{% endif %}
+</td>
+<td>
+<form method="POST" class="d-flex flex-column gap-1">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="update_booking"><input type="hidden" name="booking_id" value="{{ b.id }}">
+<select name="booking_status" class="form-select form-select-sm">{% for st in ['pending','confirmed','cancelled','completed'] %}<option value="{{ st }}" {{ 'selected' if b.booking_status==st else '' }}>{{ st }}</option>{% endfor %}</select>
+<select name="payment_status" class="form-select form-select-sm">{% for st in ['pending','partial','paid','refunded'] %}<option value="{{ st }}" {{ 'selected' if b.payment_status==st else '' }}>{{ st }}</option>{% endfor %}</select>
+<input type="number" name="advance_paid" class="form-control form-control-sm" value="{{ b.advance_paid }}" step="1">
+<button class="btn btn-sm btn-primary">Save</button>
+</form>
+<form method="POST" class="mt-1"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="mark_full_payment"><input type="hidden" name="booking_id" value="{{ b.id }}">
+<button class="btn btn-sm btn-success" {% if b.payment_status=='paid' %}disabled{% endif %}>Full Pay</button></form>
+<form method="POST" class="mt-1" onsubmit="return confirm('Delete?')"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="delete_booking"><input type="hidden" name="booking_id" value="{{ b.id }}">
+<button class="btn btn-sm btn-outline-danger">Del</button></form>
+</td>
+</tr>
+{% else %}<tr><td colspan="5" class="text-center text-muted">No bookings</td></tr>{% endfor %}
+</tbody></table></div></div>
+
+{% if data.get('seminar_bookings') %}
+<div class="card"><div class="card-header bg-white fw-semibold">Seminar Bookings</div>
+<div class="table-responsive"><table class="table table-sm mb-0">
+<thead><tr><th>Ref</th><th>Contact</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+<tbody>{% for s in data.get('seminar_bookings', []) %}<tr>
+<td>{{ s.booking_ref }}</td>
+<td>{{ s.contact_name or (s.user.name if s.user else '—') }}<br><small>{{ s.contact_phone }}</small>
+{% if s.payment_proof %}<br><a href="{{ url_for('view_seminar_proof', seminar_id=s.id) }}" target="_blank">Proof</a>{% endif %}</td>
+<td>{{ s.event_date }} · {{ s.rate_type }}</td>
+<td>{{ currency }} {{ '%.0f'|format(s.total_amount) }} / adv {{ '%.0f'|format(s.advance_paid or 0) }}</td>
+<td>
+<form method="POST" class="d-flex gap-1">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="update_seminar"><input type="hidden" name="seminar_id" value="{{ s.id }}">
+<select name="booking_status" class="form-select form-select-sm">{% for st in ['pending','confirmed','cancelled','completed'] %}<option value="{{ st }}" {{ 'selected' if s.booking_status==st else '' }}>{{ st }}</option>{% endfor %}</select>
+<select name="payment_status" class="form-select form-select-sm">{% for st in ['pending','partial','paid'] %}<option value="{{ st }}" {{ 'selected' if s.payment_status==st else '' }}>{{ st }}</option>{% endfor %}</select>
+<button class="btn btn-sm btn-primary">Save</button>
+</form></td>
+<td><form method="POST" onsubmit="return confirm('Delete?')"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="delete_seminar"><input type="hidden" name="seminar_id" value="{{ s.id }}"><button class="btn btn-sm btn-outline-danger">Del</button></form></td>
+</tr>{% endfor %}</tbody></table></div></div>
+{% endif %}
+
+{% elif section == 'customers' %}
+<h4 class="mb-4">Customers</h4>
+<div class="card"><div class="table-responsive"><table class="table table-hover mb-0 align-middle">
+<thead><tr><th>Name</th><th>Contact</th><th>Joined</th><th>Bookings</th><th>Status</th><th></th></tr></thead>
+<tbody>
+{% for u in data.get('customers', []) %}
+{% set ub = data.get('customer_bookings', {}).get(u.id, []) %}
+<tr>
+<td><strong>{{ u.name }}</strong><br><small class="text-muted">#{{ u.id }}</small></td>
+<td><small>{{ u.email }}</small><br><small>{{ u.phone or '—' }}</small></td>
+<td>{{ u.created_at.strftime('%Y-%m-%d') if u.created_at else '—' }}</td>
+<td><span class="badge bg-primary">{{ ub|length }}</span>
+{% for b in ub[:3] %}<div class="small">{{ b.booking_ref }} · {{ b.check_in }}</div>{% endfor %}</td>
+<td><span class="badge bg-{{ 'success' if u.is_active else 'secondary' }}">{{ 'Active' if u.is_active else 'Off' }}</span></td>
+<td><form method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="toggle_user"><input type="hidden" name="user_id" value="{{ u.id }}"><button class="btn btn-sm btn-outline-warning">{{ 'Disable' if u.is_active else 'Enable' }}</button></form></td>
+</tr>
+{% else %}<tr><td colspan="6" class="text-center text-muted">No customers</td></tr>{% endfor %}
+</tbody></table></div></div>
+
+{% elif section == 'payments' %}
+<h4 class="mb-4">Payments</h4>
+<div class="row g-3 mb-4">
+<div class="col-md-4"><div class="card p-3 text-center"><div class="text-muted small">Revenue (Full Paid)</div><div class="fs-4 fw-bold text-success">{{ currency }} {{ '%.0f'|format(data.get('revenue', 0)) }}</div></div></div>
+<div class="col-md-4"><div class="card p-3 text-center"><div class="text-muted small">Total Advances</div><div class="fs-4 fw-bold text-primary">{{ currency }} {{ '%.0f'|format(data.get('advance_total', 0)) }}</div></div></div>
+<div class="col-md-4"><div class="card p-3 text-center"><div class="text-muted small">Awaiting Full Pay</div><div class="fs-4 fw-bold text-warning">{{ data.get('awaiting_full', 0) }}</div></div></div>
+</div>
+<div class="card"><div class="table-responsive"><table class="table table-sm table-hover mb-0">
+<thead><tr><th>Ref</th><th>Guest</th><th>Method</th><th>Advance</th><th>Total</th><th>Txn</th><th>Proof</th><th>Status</th><th></th></tr></thead>
+<tbody>{% for b in data.get('bookings', []) %}<tr>
+<td>{{ b.booking_ref }}</td>
+<td>{{ b.user.name if b.user else '—' }}<br><small>{{ b.user.phone if b.user else '' }}</small></td>
+<td>{{ b.payment_method or '—' }}</td>
+<td>{{ currency }} {{ '%.0f'|format(b.advance_paid or 0) }}</td>
+<td>{{ currency }} {{ '%.0f'|format(b.total_amount or 0) }}</td>
+<td>{{ b.transaction_id or '—' }}</td>
+<td>{% if b.payment_proof %}<a href="{{ url_for('view_booking_proof', booking_id=b.id) }}" target="_blank">View</a>{% else %}—{% endif %}</td>
+<td>{{ b.payment_status }} / {{ b.booking_status }}</td>
+<td><form method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="mark_full_payment"><input type="hidden" name="booking_id" value="{{ b.id }}"><button class="btn btn-sm btn-success" {% if b.payment_status=='paid' %}disabled{% endif %}>Full Pay</button></form></td>
+</tr>{% else %}<tr><td colspan="9" class="text-center text-muted">No payments</td></tr>{% endfor %}
+</tbody></table></div></div>
+
+{% elif section == 'menu' %}
+<h4 class="mb-4">Restaurant Menu <button class="btn btn-sm btn-primary" data-bs-toggle="collapse" data-bs-target="#menuForm">+ Add Item</button></h4>
+<div class="collapse {{ 'show' if data.get('edit_item') else '' }} mb-4" id="menuForm"><div class="card p-4">
+{% set ei = data.get('edit_item') %}
+<form method="POST" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="save_menu">
+{% if ei %}<input type="hidden" name="item_id" value="{{ ei.id }}">{% endif %}
+<div class="row g-3">
+<div class="col-md-4"><label class="form-label">Name</label><input type="text" name="name" class="form-control" value="{{ ei.name if ei else '' }}" required></div>
+<div class="col-md-3"><label class="form-label">Category</label><input type="text" name="category" class="form-control" value="{{ ei.category if ei else 'Main Course' }}"></div>
+<div class="col-md-2"><label class="form-label">Price</label><input type="number" name="price" class="form-control" value="{{ ei.price if ei else 0 }}" step="1"></div>
+<div class="col-md-3"><label class="form-label">Image</label><input type="file" name="image" class="form-control" accept="image/*"></div>
+<div class="col-12"><label class="form-label">Description</label><input type="text" name="description" class="form-control" value="{{ ei.description if ei else '' }}"></div>
+<div class="col-md-3 form-check"><input type="checkbox" name="is_available" class="form-check-input" id="mav" {{ 'checked' if not ei or ei.is_available else '' }}><label for="mav" class="form-check-label">Available</label></div>
+<div class="col-12"><button type="submit" class="btn btn-primary">Save</button></div>
+</div></form></div></div>
+<div class="card"><div class="table-responsive"><table class="table table-hover mb-0">
+<thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Status</th><th></th></tr></thead>
+<tbody>{% for m in data.get('menu', []) %}<tr>
+<td>{% if m.image %}<img src="{{ media_url(m.image) }}" style="height:40px;width:40px;object-fit:cover;border-radius:6px" class="me-1">{% endif %}{{ m.name }}</td>
+<td>{{ m.category }}</td><td>{{ currency }} {{ '%.0f'|format(m.price) }}</td><td>{{ 'Available' if m.is_available else 'Off' }}</td>
+<td><a href="?edit={{ m.id }}" class="btn btn-sm btn-outline-primary">Edit</a>
+<form method="POST" class="d-inline" onsubmit="return confirm('Delete?')"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="delete_menu"><input type="hidden" name="item_id" value="{{ m.id }}"><button class="btn btn-sm btn-outline-danger">Del</button></form></td>
+</tr>{% else %}<tr><td colspan="5" class="text-center text-muted">No menu items</td></tr>{% endfor %}
+</tbody></table></div></div>
+
+{% elif section == 'gallery' %}
+<h4 class="mb-4">Gallery</h4>
+<div class="card p-4 mb-4"><form method="POST" enctype="multipart/form-data">
+<input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="add_gallery">
+<div class="row g-3 align-items-end">
+<div class="col-md-4"><label class="form-label">Title</label><input type="text" name="title" class="form-control"></div>
+<div class="col-md-3"><label class="form-label">Category</label><input type="text" name="category" class="form-control" value="general"></div>
+<div class="col-md-3"><label class="form-label">Images</label><input type="file" name="images" class="form-control" accept="image/*" multiple required></div>
+<div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Upload</button></div>
+</div></form></div>
+<div class="row g-3">{% for g in data.get('gallery', []) %}<div class="col-6 col-md-3 col-lg-2">
+<div class="card"><img src="{{ media_url(g.image) }}" class="card-img-top" style="height:120px;object-fit:cover">
+<div class="card-body p-2 text-center"><small>{{ g.title or '—' }}</small>
+<form method="POST" onsubmit="return confirm('Delete?')"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="delete_gallery"><input type="hidden" name="image_id" value="{{ g.id }}"><button class="btn btn-sm btn-outline-danger mt-1">Delete</button></form>
+</div></div></div>{% else %}<p class="text-muted">No gallery images yet.</p>{% endfor %}</div>
+
+{% elif section == 'reviews' %}
+<h4 class="mb-4">Reviews</h4>
+<div class="card p-4 mb-4"><h6>Add Review</h6>
+<form method="POST" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="add_review">
+<div class="row g-2">
+<div class="col-md-3"><input type="text" name="name" class="form-control" placeholder="Name" required></div>
+<div class="col-md-2"><select name="rating" class="form-select"><option value="5">5★</option><option value="4">4★</option><option value="3">3★</option></select></div>
+<div class="col-md-5"><input type="text" name="comment" class="form-control" placeholder="Comment" required></div>
+<div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Add</button></div>
+</div></form></div>
+<div class="card"><div class="table-responsive"><table class="table table-hover mb-0">
+<thead><tr><th>Name</th><th>Rating</th><th>Comment</th><th>Status</th><th></th></tr></thead>
+<tbody>{% for r in data.get('reviews', []) %}<tr>
+<td>{{ r.name }}</td><td>{{ r.rating }}★</td><td>{{ r.comment[:80] }}</td><td>{{ 'Approved' if r.is_approved else 'Pending' }}</td>
+<td class="text-nowrap">{% if not r.is_approved %}<form method="POST" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="approve_review"><input type="hidden" name="review_id" value="{{ r.id }}"><button class="btn btn-sm btn-success">Approve</button></form>{% endif %}
+<form method="POST" class="d-inline" onsubmit="return confirm('Delete?')"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="delete_review"><input type="hidden" name="review_id" value="{{ r.id }}"><button class="btn btn-sm btn-outline-danger">Del</button></form></td>
+</tr>{% endfor %}</tbody></table></div></div>
+
+{% elif section == 'amenities' %}
+<div class="d-flex justify-content-between mb-4"><h4 class="mb-0">Amenities</h4><button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#amForm">+ Add</button></div>
+<div class="collapse {{ 'show' if data.get('edit_amenity') else '' }} mb-4" id="amForm"><div class="card p-4">
+{% set ea = data.get('edit_amenity') %}
+<form method="POST" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="save_amenity">
+{% if ea %}<input type="hidden" name="amenity_id" value="{{ ea.id }}">{% endif %}
+<div class="row g-3">
+<div class="col-md-4"><input type="text" name="name" class="form-control" placeholder="Name" value="{{ ea.name if ea else '' }}" required></div>
+<div class="col-md-3"><input type="text" name="icon" class="form-control" placeholder="bi-star" value="{{ ea.icon if ea else 'bi-star' }}"></div>
+<div class="col-md-3"><input type="file" name="image" class="form-control" accept="image/*"></div>
+<div class="col-md-2 form-check mt-2"><input type="checkbox" name="is_active" class="form-check-input" {{ 'checked' if not ea or ea.is_active else '' }}><label class="form-check-label">Active</label></div>
+<div class="col-12"><input type="text" name="description" class="form-control" placeholder="Description" value="{{ ea.description if ea else '' }}"></div>
+<div class="col-12"><button type="submit" class="btn btn-primary">Save</button></div>
+</div></form></div></div>
+<div class="card"><div class="table-responsive"><table class="table mb-0">
+<thead><tr><th>Icon</th><th>Name</th><th>Status</th><th></th></tr></thead>
+<tbody>{% for a in data.get('amenities', []) %}<tr>
+<td><i class="bi {{ a.icon }}"></i></td><td>{{ a.name }}</td><td>{{ 'Active' if a.is_active else 'Off' }}</td>
+<td><a href="?edit={{ a.id }}" class="btn btn-sm btn-outline-primary">Edit</a>
+<form method="POST" class="d-inline" onsubmit="return confirm('Delete?')"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="delete_amenity"><input type="hidden" name="amenity_id" value="{{ a.id }}"><button class="btn btn-sm btn-outline-danger">Del</button></form></td>
+</tr>{% endfor %}</tbody></table></div></div>
+
+{% elif section == 'sliders' %}
+<div class="d-flex justify-content-between mb-4"><h4 class="mb-0">Hero Slider</h4><button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#slForm">+ Add Slide</button></div>
+<div class="collapse {{ 'show' if data.get('edit_slider') else '' }} mb-4" id="slForm"><div class="card p-4">
+{% set es = data.get('edit_slider') %}
+<form method="POST" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="save_slider">
+{% if es %}<input type="hidden" name="slider_id" value="{{ es.id }}">{% endif %}
+<div class="row g-3">
+<div class="col-md-6"><input type="text" name="title" class="form-control" placeholder="Title" value="{{ es.title if es else '' }}"></div>
+<div class="col-md-6"><input type="text" name="subtitle" class="form-control" placeholder="Subtitle" value="{{ es.subtitle if es else '' }}"></div>
+<div class="col-md-4"><input type="text" name="button_text" class="form-control" placeholder="Button text" value="{{ es.button_text if es else '' }}"></div>
+<div class="col-md-4"><input type="text" name="button_link" class="form-control" placeholder="#rooms" value="{{ es.button_link if es else '' }}"></div>
+<div class="col-md-4"><input type="file" name="image" class="form-control" accept="image/*"></div>
+<div class="col-md-2 form-check"><input type="checkbox" name="is_active" class="form-check-input" {{ 'checked' if not es or es.is_active else '' }}><label class="form-check-label">Active</label></div>
+<div class="col-12"><button type="submit" class="btn btn-primary">Save</button></div>
+</div></form></div></div>
+<div class="card"><div class="table-responsive"><table class="table mb-0">
+<thead><tr><th>Title</th><th>Subtitle</th><th>Status</th><th></th></tr></thead>
+<tbody>{% for s in data.get('sliders', []) %}<tr>
+<td>{{ s.title }}</td><td>{{ s.subtitle }}</td><td>{{ 'Active' if s.is_active else 'Off' }}</td>
+<td><a href="?edit={{ s.id }}" class="btn btn-sm btn-outline-primary">Edit</a>
+<form method="POST" class="d-inline" onsubmit="return confirm('Delete?')"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="delete_slider"><input type="hidden" name="slider_id" value="{{ s.id }}"><button class="btn btn-sm btn-outline-danger">Del</button></form></td>
+</tr>{% endfor %}</tbody></table></div></div>
+
+{% elif section == 'coupons' %}
+<div class="d-flex justify-content-between mb-4"><h4 class="mb-0">Coupons</h4><button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#cpForm">+ Add Coupon</button></div>
+<div class="collapse {{ 'show' if data.get('edit_coupon') else '' }} mb-4" id="cpForm"><div class="card p-4">
+{% set ec = data.get('edit_coupon') %}
+<form method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="save_coupon">
+{% if ec %}<input type="hidden" name="coupon_id" value="{{ ec.id }}">{% endif %}
+<div class="row g-3">
+<div class="col-md-3"><input type="text" name="code" class="form-control" placeholder="CODE" value="{{ ec.code if ec else '' }}" required></div>
+<div class="col-md-2"><select name="discount_type" class="form-select"><option value="percent" {{ 'selected' if ec and ec.discount_type=='percent' else '' }}>Percent</option><option value="fixed" {{ 'selected' if ec and ec.discount_type=='fixed' else '' }}>Fixed</option></select></div>
+<div class="col-md-2"><input type="number" name="discount_value" class="form-control" placeholder="Value" value="{{ ec.discount_value if ec else 10 }}" step="0.1"></div>
+<div class="col-md-2"><input type="number" name="min_amount" class="form-control" placeholder="Min amount" value="{{ ec.min_amount if ec else 0 }}"></div>
+<div class="col-md-2"><input type="number" name="max_uses" class="form-control" placeholder="Max uses (0=∞)" value="{{ ec.max_uses if ec else 0 }}"></div>
+<div class="col-md-3"><input type="date" name="valid_from" class="form-control" value="{{ ec.valid_from if ec and ec.valid_from else '' }}"></div>
+<div class="col-md-3"><input type="date" name="valid_until" class="form-control" value="{{ ec.valid_until if ec and ec.valid_until else '' }}"></div>
+<div class="col-md-2 form-check mt-2"><input type="checkbox" name="is_active" class="form-check-input" {{ 'checked' if not ec or ec.is_active else '' }}><label class="form-check-label">Active</label></div>
+<div class="col-12"><button type="submit" class="btn btn-primary">Save</button></div>
+</div></form></div></div>
+<div class="card"><div class="table-responsive"><table class="table mb-0">
+<thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Used</th><th>Status</th><th></th></tr></thead>
+<tbody>{% for c in data.get('coupons', []) %}<tr>
+<td><code>{{ c.code }}</code></td><td>{{ c.discount_type }}</td><td>{{ c.discount_value }}{{ '%' if c.discount_type=='percent' else '' }}</td>
+<td>{{ c.used_count }}{% if c.max_uses %}/{{ c.max_uses }}{% endif %}</td><td>{{ 'Active' if c.is_active else 'Off' }}</td>
+<td><a href="?edit={{ c.id }}" class="btn btn-sm btn-outline-primary">Edit</a>
+<form method="POST" class="d-inline" onsubmit="return confirm('Delete?')"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="delete_coupon"><input type="hidden" name="coupon_id" value="{{ c.id }}"><button class="btn btn-sm btn-outline-danger">Del</button></form></td>
+</tr>{% endfor %}</tbody></table></div></div>
+
+{% elif section == 'seminar' %}
+<h4 class="mb-4">Seminar Hall &amp; Outdoor Area</h4>
+<div class="card p-4"><form method="POST" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<div class="row g-3">
+<div class="col-md-3"><label class="form-label">Seminar Capacity</label><input type="number" name="seminar_capacity" class="form-control" value="{{ seminar_capacity }}"></div>
+<div class="col-md-3"><label class="form-label">Day Rate ({{ currency }})</label><input type="number" name="seminar_day_rate" class="form-control" value="{{ seminar_day_rate }}"></div>
+<div class="col-md-3"><label class="form-label">Hourly Rate ({{ currency }})</label><input type="number" name="seminar_hour_rate" class="form-control" value="{{ seminar_hour_rate }}"></div>
+<div class="col-md-3"><label class="form-label">Outdoor Capacity</label><input type="number" name="outdoor_capacity" class="form-control" value="{{ outdoor_capacity }}"></div>
+<div class="col-md-6">
+<label class="form-label">Seminar Hall Background Image</label>
+{% if seminar_image %}<div class="mb-2"><img src="{{ media_url(seminar_image) }}" alt="Seminar" style="width:100%;max-height:220px;object-fit:cover;border-radius:12px;border:1px solid #ddd;display:block"><div class="form-check mt-1"><input type="checkbox" name="remove_seminar_image" class="form-check-input" id="rsi"><label for="rsi" class="form-check-label small">Remove image</label></div></div>{% endif %}
+<input type="file" name="seminar_image" class="form-control" accept="image/*">
+</div>
+<div class="col-md-6">
+<label class="form-label">Outdoor Area Background Image</label>
+{% if outdoor_image %}<div class="mb-2"><img src="{{ media_url(outdoor_image) }}" alt="Outdoor" style="width:100%;max-height:220px;object-fit:cover;border-radius:12px;border:1px solid #ddd;display:block"><div class="form-check mt-1"><input type="checkbox" name="remove_outdoor_image" class="form-check-input" id="roi"><label for="roi" class="form-check-label small">Remove image</label></div></div>{% endif %}
+<input type="file" name="outdoor_image" class="form-control" accept="image/*">
+</div>
+<div class="col-12"><button type="submit" class="btn btn-primary">Save</button></div>
+</div></form></div>
+
+{% elif section == 'reports' %}
+<h4 class="mb-4">Reports</h4>
+<div class="row g-3 mb-4">
+<div class="col-md-3"><div class="card p-3 text-center"><div class="text-muted small">Revenue (Full Paid)</div><div class="fs-4 fw-bold text-success">{{ currency }} {{ '%.0f'|format(data.get('total_revenue', 0)) }}</div></div></div>
+<div class="col-md-3"><div class="card p-3 text-center"><div class="text-muted small">Total Bookings</div><div class="fs-4 fw-bold">{{ data.get('total_bookings', 0) }}</div></div></div>
+<div class="col-md-3"><div class="card p-3 text-center"><div class="text-muted small">Confirmed</div><div class="fs-4 fw-bold text-primary">{{ data.get('by_status', {}).get('confirmed', 0) }}</div></div></div>
+<div class="col-md-3"><div class="card p-3 text-center"><div class="text-muted small">Cancelled</div><div class="fs-4 fw-bold text-danger">{{ data.get('by_status', {}).get('cancelled', 0) }}</div></div></div>
+</div>
+<div class="card"><div class="card-header bg-white">All Bookings</div>
+<div class="table-responsive"><table class="table table-sm mb-0">
+<thead><tr><th>Ref</th><th>Guest</th><th>Room</th><th>Dates</th><th>Total</th><th>Paid</th><th>Status</th></tr></thead>
+<tbody>{% for b in data.get('bookings', []) %}<tr>
+<td>{{ b.booking_ref }}</td><td>{{ b.user.name if b.user else '—' }}</td><td>{{ b.room.number if b.room else '—' }}</td>
+<td>{{ b.check_in }} – {{ b.check_out }}</td><td>{{ currency }} {{ '%.0f'|format(b.total_amount) }}</td>
+<td>{{ currency }} {{ '%.0f'|format(b.advance_paid) }}</td><td>{{ b.booking_status }}</td>
+</tr>{% endfor %}</tbody></table></div></div>
+
+{% elif section == 'seo' %}
+<h4 class="mb-4">SEO Settings</h4>
+<div class="card p-4"><form method="POST" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<div class="mb-3"><label class="form-label">Page Title</label><input type="text" name="seo_title" class="form-control" value="{{ seo_title }}"></div>
+<div class="mb-3"><label class="form-label">Meta Description</label><textarea name="seo_description" class="form-control" rows="3">{{ seo_description }}</textarea></div>
+<div class="mb-3"><label class="form-label">Google / Social Preview Image (OG Image)</label>
+{% if og_image %}<div class="mb-2"><img src="{{ media_url(og_image) }}" style="max-height:100px;border-radius:8px" class="border"></div>{% endif %}
+<input type="file" name="og_image" class="form-control mb-2" accept="image/*">
+<input type="url" name="og_image_url" class="form-control" placeholder="Or paste image URL" value="">
+<small class="text-muted">Shows when shared on Facebook/Google. Recommended 1200×630px.</small>
+</div>
+<button type="submit" class="btn btn-primary">Save</button></form></div>
+
+{% elif section == 'theme' %}
+<h4 class="mb-4">Theme &amp; Page Backgrounds</h4>
+<div class="card p-4 mb-4"><form method="POST" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+<input type="hidden" name="action" value="save_theme">
+<h5 class="mb-3">Colors</h5>
+<div class="row g-3 mb-4">
+<div class="col-md-4"><label class="form-label">Primary Color</label>
+<input type="color" name="primary_color" class="form-control form-control-color w-100" value="{{ primary_color }}" style="height:48px">
+<small class="text-muted">Navbar, buttons</small></div>
+<div class="col-md-4"><label class="form-label">Secondary / Gold</label>
+<input type="color" name="secondary_color" class="form-control form-control-color w-100" value="{{ secondary_color }}" style="height:48px">
+</div>
+<div class="col-md-4 d-flex align-items-end"><div class="p-3 rounded w-100 text-white" style="background:{{ primary_color }}">Primary preview</div></div>
+</div>
+<h5 class="mb-3">Background brightness</h5>
+<div class="mb-4 p-3 border rounded bg-light">
+<label class="form-label">How bright background photos appear (0 = faded, 100 = full bright)</label>
+<input type="range" name="bg_brightness" class="form-range" min="0" max="100" value="{{ bg_brightness if bg_brightness is defined else 35 }}" oninput="this.nextElementSibling.value=this.value">
+<output class="fw-semibold">{{ bg_brightness if bg_brightness is defined else 35 }}</output><span class="text-muted small"> / 100</span>
+<p class="small text-muted mb-0 mt-1">Higher = photo shows clearer. Lower = lighter wash over the photo.</p>
+</div>
+<h5 class="mb-3">Background Images</h5>
+<p class="small text-muted mb-3">Upload a photo for any section — it appears on the public website.</p>
+<div class="row g-4">
+{% set bg_items = [
+  ('hero_image', 'Hero (homepage banner)'),
+  ('page_bg_image', 'Whole page background'),
+  ('rooms_bg_image', 'Rooms section'),
+  ('amenities_bg_image', 'Amenities section'),
+  ('restaurant_bg_image', 'Restaurant section'),
+  ('gallery_bg_image', 'Gallery section'),
+  ('contact_bg_image', 'Contact / Location section'),
+] %}
+{% for key, label in bg_items %}
+{% set val = hero_image if key=='hero_image' else (page_bg_image if key=='page_bg_image' else (rooms_bg_image if key=='rooms_bg_image' else (amenities_bg_image if key=='amenities_bg_image' else (restaurant_bg_image if key=='restaurant_bg_image' else (gallery_bg_image if key=='gallery_bg_image' else contact_bg_image))))) %}
+<div class="col-md-6">
+<label class="form-label fw-semibold">{{ label }}</label>
+{% if val %}<img src="{{ media_url(val) }}" class="mb-2 border rounded" style="width:100%;max-height:150px;object-fit:cover;display:block">{% endif %}
+<input type="file" name="{{ key }}" class="form-control form-control-sm mb-1" accept="image/*">
+<input type="url" name="{{ key }}_url" class="form-control form-control-sm mb-1" placeholder="Or paste image URL">
+{% if val %}<div class="form-check"><input type="checkbox" class="form-check-input" name="remove_{{ key }}" id="rm_{{ key }}"><label class="form-check-label small" for="rm_{{ key }}">Remove / reset</label></div>{% endif %}
+</div>
+{% endfor %}
+</div>
+<div class="mt-4">
+<button type="submit" class="btn btn-primary">Save Theme &amp; Backgrounds</button>
+<a href="{{ url_for('index') }}" target="_blank" class="btn btn-outline-secondary ms-2">Preview Site</a>
+</div>
+</form></div>
+
+{% elif section == 'backup' %}
+<h4 class="mb-4">Backup / Restore</h4>
+<div class="card p-4">
+<p class="text-muted">Export settings and rooms data as JSON backup.</p>
+<form method="POST"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><input type="hidden" name="action" value="backup">
+<button type="submit" class="btn btn-primary"><i class="bi bi-download me-1"></i> Create Backup</button></form>
+<p class="small text-muted mt-3">Backup file will be saved to <code>static/uploads/backup.json</code></p>
+</div>
+
+{% else %}
+<h4>Section: {{ section }}</h4><p class="text-muted">Use sidebar navigation.</p>
+{% endif %}
+</main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
