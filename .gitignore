@@ -5,3 +5,5 @@ __pycache__/
 venv/
 hotel.db
 hotel_grand_garden.db
+.vercel
+.env*
