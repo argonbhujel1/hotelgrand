@@ -1595,29 +1595,32 @@ def admin_section(section):
                         other.set_images(existing)
                 db.session.commit()
                 flash('Room saved. Class photos updated for all rooms named "{}".'.format(room.name), 'success')
-            elif action == 'save_class_images':
+                       elif action == 'save_class_images':
                 class_name = request.form.get('class_name', '').strip()
                 if not class_name:
                     flash('Class name required.', 'danger')
                     return redirect(url_for('admin_section', section='rooms'))
                 imgs = []
-                # keep existing from first room of class unless replaced
-                first = Room.query.filter_by(name=class_name).order_by(Room.sort_order).first()
-                if first:
-                    imgs = first.get_images()
+                new_uploads = []
                 if 'images' in request.files:
                     for f in request.files.getlist('images'):
                         if f.filename:
                             p = save_upload(f, 'rooms')
                             if p:
-                                imgs.append(p)
+                                new_uploads.append(p)
+                if new_uploads:
+                    # नयाँ photo आएमा पुरानो local/broken path हटाएर replace
+                    imgs = new_uploads
+                else:
+                    first = Room.query.filter_by(name=class_name).order_by(Room.sort_order).first()
+                    if first:
+                        imgs = first.get_images()
                 remove = request.form.getlist('remove_image')
                 imgs = [i for i in imgs if i not in remove]
                 for r in Room.query.filter_by(name=class_name).all():
                     r.set_images(imgs)
                 db.session.commit()
-                flash(f'Class photo updated for "{class_name}".', 'success')
-            elif action == 'delete_room':
+                flash(f'Class photo updated for "{class_name}".', 'success')            elif action == 'delete_room':
                 rid = request.form.get('room_id')
                 room = db.session.get(Room, int(rid))
                 if room:
